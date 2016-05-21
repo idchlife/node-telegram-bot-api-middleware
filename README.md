@@ -85,6 +85,8 @@ Then you can use it like this:
   // Adding more, it will create new set of middleware, not affecting old set of
   // middlewares. response still will have 2 middlewares.
   const checkAuth = response.use(function() {
+    // Imagine, this also can be method from other middleware,
+    // e.g.: this.isAuthenticated()
     const userIsAuthenticated = false;
     
     if (!userIsAuthenticated) {
@@ -95,7 +97,9 @@ Then you can use it like this:
     }
   });
   
-  bot.onText(//, );
+  bot.onText(/\/need_auth/, checkAuth(function() {
+    // Give some info only to authenticated user
+  }));
 ```
 
 ## How does it work
