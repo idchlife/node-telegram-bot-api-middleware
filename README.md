@@ -11,6 +11,44 @@ I present you the way of using power of generators and **co** library by **tj** 
 
     npm i node-telegram-bot-api-middleware --save
 
+Then you can use it like this:
+
     const TelegramBot = require('node-telegram-bot-api');
     const bot = new TelegramBot(TOKEN, { polling: true });
     const use = require('use');
+    
+    // Simple middleware that adds random method to your context
+    function randomMiddleware() {
+      this.random = (number) => Math.floor(Math.random() * number)
+    }
+    
+    let response = use(randomMiddleware);
+    
+    bot.onText(/\/command/, response(function() {
+      bot.sendMessage(this.chatId, this.random());
+    });
+    
+    // or
+    response = response.use(function() {
+      bot.sendMessage(this.chatId, this.random());
+    });
+    
+    bot.onText(/\/command/, response);
+    
+    // or
+    
+    response = response(function() {
+      bot.sendMessage(this.chatId, this.random());
+    });
+    
+    bot.onText(/\/command/, response);
+    
+## How does it work
+
+**use** - is just a function, that returns another function, that accepts middleware as arguments or object with
+message data on bot.onText executiong. It also has .use method, that is just copy of function itself. Useful when
+writing code like use(middleware).use(middleware)(yourCallbackFunction)
+
+Basically you can write even like this:
+
+    use(middleware)(middleware).use(middleware)(botCallbackArguments); // botCallbackArguments will be passed by bot, and executed function will be also by bot.
