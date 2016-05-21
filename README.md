@@ -16,7 +16,7 @@ Then you can use it like this:
 ```js
     const TelegramBot = require('node-telegram-bot-api');
     const bot = new TelegramBot(TOKEN, { polling: true });
-    const use = require('use');
+    const use = require('node-telegram-bot-api-middleware').use;
     
     // Simple middleware that adds random method to your context
     function randomMiddleware() {
