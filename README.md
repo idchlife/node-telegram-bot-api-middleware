@@ -13,6 +13,7 @@ I present you the way of using power of generators and **co** library by **tj** 
 
 Then you can use it like this:
 
+```js
     const TelegramBot = require('node-telegram-bot-api');
     const bot = new TelegramBot(TOKEN, { polling: true });
     const use = require('use');
@@ -25,7 +26,7 @@ Then you can use it like this:
     let response = use(randomMiddleware);
     
     bot.onText(/\/command/, response(function() {
-      bot.sendMessage(this.chatId, this.random());
+      bot.sendMessage(this.chatId, this.random(10));
     });
     
     // or
@@ -42,7 +43,7 @@ Then you can use it like this:
     });
     
     bot.onText(/\/command/, response);
-    
+```
 ## How does it work
 
 **use** - is just a function, that returns another function, that accepts middleware as arguments or object with
@@ -51,4 +52,6 @@ writing code like use(middleware).use(middleware)(yourCallbackFunction)
 
 Basically you can write even like this:
 
+```js
     use(middleware)(middleware).use(middleware)(botCallbackArguments); // botCallbackArguments will be passed by bot, and executed function will be also by bot.
+```

@@ -74,11 +74,11 @@ describe('basic middleware usage', () => {
   it('should work properly with alternative syntax', function* () {
     const v = [];
 
-    yield use(() => v.push('A'))(() => v.push('B'))(() => v.push('C'))(botArgumentsMock);
+    yield use(() => v.push('A')).use(() => v.push('B'))(() => v.push('C'))(botArgumentsMock);
 
     expect(v.join('')).to.equal('ABC');
 
-    yield use(() => v.push('D'))(function() { this.stop() })(() => v.push('E'))(botArgumentsMock);
+    yield use(() => v.push('D'))(function() { this.stop(); })(() => v.push('E'))(botArgumentsMock);
 
     expect(v.join('')).to.equal('ABCD');
   });

@@ -3,6 +3,13 @@
 const co = require('co');
 
 /**
+ * Checking if fn is generator
+ */
+function isGenerator(fn) {
+  return Object.getPrototypeOf(fn) === Object.getPrototypeOf(function* () {});
+}
+
+/**
  * This is default middleware, that adds handy functionality to context for
  * other middlewares to use
  */
@@ -133,17 +140,24 @@ const botCallback = function botCallback() {
       }
 
       /**
-       * Using co.wrap to wrap function if it's plain function so we can use
-       * yield with it to ensure Promises, generators execution
+       * Creating callback
        */
-      const middleware = co.wrap(this.middlewares[i]);
+      const middleware = this.middlewares[i];
 
       /**
+       * If middleware just a function, execute it without yield
+       *
+       *
        * Executing middleware with context object and args.
        * Args by this point is arguments passed by node-telegram-bot-api when
        * receiving new message from recipient
        */
-      yield middleware.apply(context, args);
+      if (!isGenerator(middleware)) {
+        middleware.apply(context, args);
+      } else {
+        yield middleware.apply(context, args);
+      }
+
     }
   }.bind(this));
 };
