@@ -101,3 +101,5 @@ Basically you can write even like this:
 ```js
     use(middleware)(middleware).use(middleware)(botCallbackArguments); // botCallbackArguments will be passed by bot, and executed function will be also by bot.
 ```
+
+For more information on this topic look into index.js file. There are many comments explaining how does it work.
