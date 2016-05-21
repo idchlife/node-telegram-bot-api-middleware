@@ -45,6 +45,9 @@ Then you can use it like this:
     bot.onText(/\/command/, response);
 ```
 
+## Available at the moment middleware
+ -
+
 ## Usage
 
 ```js
@@ -54,7 +57,9 @@ Then you can use it like this:
   
   // You can use simple functions
   function middleware2() {
-    // You will already have msg, chatId in context
+    // You will already have msg, chatId in context. This is achieved by added already inside
+    // library default middleware, that populates context with those things, as well as method .stop()
+    // (see further down about .stop)
     
     this.quickResponse = function* (text) {
       yield bot.sendMessage(this.chatId, text);
@@ -68,6 +73,10 @@ Then you can use it like this:
     console.log('Answer sent');
   }
   
+  // You cannot use short functions if you're going to use context passed from
+  // previous middleware. `This wont't work: `
+  const notWorkingResponse = use(() => { console.log(this.msg.chat.id); });
+  
   // Be aware of adding middlewares in proper order,
   // because they will be executed in order in which you added them
   const response = use(middleware).use(middleware2);
@@ -75,18 +84,18 @@ Then you can use it like this:
   // You can also add more middleware to variable that already has set of middlewares
   // Adding more, it will create new set of middleware, not affecting old set of
   // middlewares. response still will have 2 middlewares.
-  const stoppingMiddleware = response.use(function() {
+  const checkAuth = response.use(function() {
     const userIsAuthenticated = false;
     
-    // If you want to prevent next middlewares after this executing, use .stop()
     if (!userIsAuthenticated) {
       this.quickResponse('You are not authenticated to do that');
       
+      // If you want to prevent executing next middlewares, use .stop()
       this.stop();
     }
   });
   
-  bot
+  bot.onText(//, );
 ```
 
 ## How does it work
@@ -103,3 +112,8 @@ Basically you can write even like this:
 ```
 
 For more information on this topic look into index.js file. There are many comments explaining how does it work.
+
+
+## Help yourself and everyone build better bots!
+
+As you can see, this is cool opportunity to create many different middleware libraries for different purposes. For database connection, for special file uploaders or many other things. Join the opensource! (if you did not yet) Create middleware for some other libraries or for your special case and share with everyone! Create an issue or send pull request and I will add link to your middleware in the list.
