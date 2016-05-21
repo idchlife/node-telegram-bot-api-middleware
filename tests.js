@@ -60,14 +60,26 @@ describe('basic middleware usage', () => {
 
     expect(values).to.be.empty;
 
-    yield use(function() {
+    yield use(function () {
       values.push('A');
-    }).use(function() {
+    }).use(function () {
       this.stop();
-    }).use(function() {
+    }).use(function () {
       values.push('B');
     })(botArgumentsMock);
 
     expect(values.join('')).to.equal('A');
+  });
+
+  it('should work properly with alternative syntax', function* () {
+    const v = [];
+
+    yield use(() => v.push('A'))(() => v.push('B'))(() => v.push('C'))(botArgumentsMock);
+
+    expect(v.join('')).to.equal('ABC');
+
+    yield use(() => v.push('D'))(function() { this.stop() })(() => v.push('E'))(botArgumentsMock);
+
+    expect(v.join('')).to.equal('ABCD');
   });
 });
