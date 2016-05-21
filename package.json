@@ -1,6 +1,6 @@
 {
   "name": "node-telegram-bot-api-middleware",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Package that helps using middleware with generators in node-telegram-bot-api",
   "main": "index.js",
   "scripts": {
