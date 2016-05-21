@@ -4,7 +4,7 @@
   "description": "Package that helps using middleware with generators in node-telegram-bot-api",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests.js"
   },
   "author": "",
   "license": "ISC",
