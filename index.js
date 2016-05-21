@@ -157,7 +157,6 @@ const botCallback = function botCallback() {
       } else {
         yield middleware.apply(context, args);
       }
-
     }
   }.bind(this));
 };
