@@ -1,3 +1,5 @@
+'use strict';
+
 const expect = require('chai').expect;
 const use = require('./index').use;
 require('co-mocha');
