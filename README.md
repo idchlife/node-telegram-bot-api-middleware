@@ -46,7 +46,7 @@ Then you can use it like this:
 ```
 
 ## Available at the moment middleware
- -
+ - **simpleauth** - https://github.com/idchlife/node-telegram-bot-api-middleware-simpleauth
 
 ## Usage
 
