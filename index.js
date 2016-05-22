@@ -208,6 +208,8 @@ exports.setOnErrorHandler = (onError) => {
   }
 };
 
+exports.getDefaultErrorHandler = () => onErrorHandlerDefault;
+
 /**
  * Reset error handler to default. For testing and various purposes
  */

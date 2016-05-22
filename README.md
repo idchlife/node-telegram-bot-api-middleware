@@ -102,6 +102,34 @@ Then you can use it like this:
   }));
 ```
 
+### Handling errors.
+
+Default error handler built in will console.error all errors from middleware and proceed to next one.
+
+You can also set your own global error handler like this (WARNING: this will replace default error handler, if you need to combine default handler with your - use middleware.getDefaultErrorHandler()):
+
+```js
+  const middleware = require('middleware');
+  const use = middleware.use;
+  
+  middleware.setErrorHandler(err => {
+    // Your own logic for handling errors
+  });
+```
+
+Sometime you might need to set custom error handler to your middleware.
+This done line this:
+
+```js
+  function yourCustomMiddleware() {
+    this.methodWithPossibilityOfErrorOccuring();
+  }
+  
+  yourCustomMiddleware.onErrorHandler = err => {
+    // Log or do some other things with error
+  }
+```
+
 ## How does it work
 
 **use** - is just a function, that returns another function, that accepts middleware as arguments or object with
