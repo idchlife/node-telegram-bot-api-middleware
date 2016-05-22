@@ -78,10 +78,14 @@ const botCallback = function botCallback() {
    * is function, then callback for bot message is added
    */
   if (args.length && typeof args[0] === 'function') {
-    this.middlewares.push(args[0]);
+    const copy = {
+      middlewares: this.middlewares.slice()
+    };
 
-    const callback = botCallback.bind(this);
-    callback.use = use.bind(this);
+    copy.middlewares.push(args[0]);
+
+    const callback = botCallback.bind(copy);
+    callback.use = use.bind(copy);
 
     return callback;
   }

@@ -84,7 +84,7 @@ describe('basic middleware usage', () => {
     expect(v.join('')).to.equal('ABCD');
   });
   
-  it('should properly throw errors and also pass it to middleware error handler', function *() {
+  it('should properly throw errors and also pass it to middleware error handler', function* () {
     let wasThereError = false;
     let middlewareErrorHandlerWorked = false;
 
@@ -110,5 +110,34 @@ describe('basic middleware usage', () => {
       expect(wasThereError).to.equal(true);
       expect(middlewareErrorHandlerWorked).to.equal(true);
     }
+  });
+
+  it('should properly pass copied context and not affect previous middlewares', function* () {
+    const values = [];
+
+    const def = use(() => {
+      values.push('Z');
+    });
+
+    const a = def.use(() => {
+      values.push('A');
+    });
+
+    const b = def.use(() => {
+      values.push('B');
+    });
+
+    const c = b.use(() => {
+      values.push('C');
+    });
+
+    yield a(botArgumentsMock);
+    yield b(botArgumentsMock);
+
+    expect(values.join('')).to.equal('ZAZB');
+
+    yield c(botArgumentsMock);
+
+    expect(values.join('')).to.equal('ZAZBZBC');
   });
 });
