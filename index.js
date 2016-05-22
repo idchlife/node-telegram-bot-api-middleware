@@ -152,13 +152,67 @@ const botCallback = function botCallback() {
        * Args by this point is arguments passed by node-telegram-bot-api when
        * receiving new message from recipient
        */
-      if (!isGenerator(middleware)) {
-        middleware.apply(context, args);
-      } else {
-        yield middleware.apply(context, args);
+      try {
+        if (!isGenerator(middleware)) {
+          middleware.apply(context, args);
+        } else {
+          yield middleware.apply(context, args);
+        }
+      } catch (err) {
+        /**
+         * If middleware that had error has onErrorHandler in it,
+         * pass error to it also
+         */
+        if (typeof middleware.onErrorHandler === 'function') {
+          middleware.onErrorHandler(err);
+        }
+
+        /**
+         * We want error to pass to main handler also,
+         * so it won't be lost
+         */
+        throw err;
       }
     }
-  }.bind(this));
+  }.bind(this)).catch(onErrorHandler);
+};
+
+/**
+ * Default error handler to handle errors in middleware.
+ * It will only console.errors
+ *
+ * @param error
+ */
+const onErrorHandlerDefault = (error) => {
+  console.error('[node-telegram-bot-api-middleware]: Error occured in the middleware: ');
+  console.error(error);
+};
+
+let onErrorHandler = onErrorHandlerDefault;
+
+/**
+ * You can set your own handler of all errors
+ * @param onError
+ */
+exports.setOnErrorHandler = (onError) => {
+  /**
+   * OnError must be a function that does something
+   */
+  if (typeof onError !== 'function') {
+    console.error(
+      '[node-telegram-bot-api-middleware]: ' +
+      'onErrorHandler must be function. Not setting.'
+    );
+  } else {
+    onErrorHandler = onError;
+  }
+};
+
+/**
+ * Reset error handler to default. For testing and various purposes
+ */
+exports.resetErrorHandler = () => {
+  onErrorHandler = onErrorHandlerDefault;
 };
 
 exports.use = use;

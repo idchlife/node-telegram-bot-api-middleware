@@ -1,7 +1,8 @@
 'use strict';
 
 const expect = require('chai').expect;
-const use = require('./index').use;
+const middleware = require('./index');
+const use = middleware.use;
 require('co-mocha');
 
 const botArgumentsMock = {
@@ -81,5 +82,33 @@ describe('basic middleware usage', () => {
     yield use(() => v.push('D'))(function() { this.stop(); })(() => v.push('E'))(botArgumentsMock);
 
     expect(v.join('')).to.equal('ABCD');
+  });
+  
+  it('should properly throw errors and also pass it to middleware error handler', function *() {
+    let wasThereError = false;
+    let middlewareErrorHandlerWorked = false;
+
+    function customErrorHandler(err) {
+      throw err;
+    }
+
+    function middlewareWithErrorHandler() {
+      this.undefinedMethod();
+    }
+
+    middlewareWithErrorHandler.onErrorHandler = function() {
+      middlewareErrorHandlerWorked = true;
+    };
+    
+    middleware.setOnErrorHandler(customErrorHandler);
+    
+    try {
+      yield use(middlewareWithErrorHandler)(botArgumentsMock);
+    } catch (err) {
+      wasThereError = true;
+    } finally {
+      expect(wasThereError).to.equal(true);
+      expect(middlewareErrorHandlerWorked).to.equal(true);
+    }
   });
 });
