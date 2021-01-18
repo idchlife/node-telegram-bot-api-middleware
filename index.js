@@ -188,7 +188,7 @@ const botCallback = function botCallback() {
  * @param error
  */
 const onErrorHandlerDefault = (error) => {
-  console.error('[node-telegram-bot-api-middleware]: Error occured in the middleware: ');
+  console.error('[node-telegram-bot-api-middleware]: Error occurred in the middleware: ');
   console.error(error);
 };
 
